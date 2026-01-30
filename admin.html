@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Upload — Pamira Dewwin</title>
+  <style>
+    body { font-family: sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; background:#222; color:white; }
+    .container { background:rgba(0,0,0,0.6); padding:20px 30px; border-radius:10px; text-align:center; }
+    input, button { margin-top:10px; padding:10px; border-radius:5px; border:none; font-weight:bold; }
+    button { cursor:pointer; background:#ff6ec4; color:white; }
+    button:hover { background:#7873f5; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Upload Photo</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" name="photo" id="photo" required>
+      <br>
+      <button type="submit">Upload</button>
+    </form>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = document.getElementById("photo").files[0];
+      if (!file) return alert("Please select a photo!");
+
+      const formData = new FormData();
+      formData.append("photo", file);
+
+      try {
+        const res = await fetch("/upload", { method: "POST", body: formData });
+        if (res.ok) {
+          status.textContent = "Photo uploaded successfully!";
+          form.reset();
+        } else {
+          status.textContent = "Upload failed.";
+        }
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Error uploading photo.";
+      }
+    });
+  </script>
+</body>
+</html>

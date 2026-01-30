@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery — Pamira Dewwin</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(120deg, #ff6ec4, #7873f5);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: white;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background: rgba(0,0,0,0.3);
+      padding: 30px 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      max-width: 900px;
+      width: 90%;
+    }
+
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 20px;
+    }
+
+    .gallery-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .gallery-grid img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-grid img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255,255,255,0.6);
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 25px;
+      background: #ff6ec4;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #7873f5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Gallery</h1>
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <a href="index.html" class="btn">Back to Home</a>
+  </div>
+
+  <script>
+    const galleryGrid = document.getElementById("galleryGrid");
+
+    // Load images from /uploads folder automatically
+    async function loadGallery() {
+      try {
+        const res = await fetch("/uploads");
+        if (!res.ok) return console.error("Cannot fetch gallery");
+
+        const files = await res.json(); // Node server should return JSON list of images
+        galleryGrid.innerHTML = "";
+
+        files.forEach(file => {
+          const img = document.createElement("img");
+          img.src = `/uploads/${file}`;
+          galleryGrid.appendChild(img);
+
+          img.onload = () => img.style.opacity = 1;
+          img.addEventListener("click", () => {
+            const newWindow = window.open();
+            newWindow.document.write(`
+              <html>
+                <head>
+                  <title>Image View</title>
+                  <style>
+                    body { margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background:#111; }
+                    img { max-width:90%; max-height:90%; }
+                  </style>
+                </head>
+                <body>
+                  <img src="/uploads/${file}" alt="Image Detail" />
+                </body>
+              </html>
+            `);
+          });
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadGallery();
+  </script>
+
+</body>
+</html>

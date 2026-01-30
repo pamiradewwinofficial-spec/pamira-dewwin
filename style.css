@@ -1,0 +1,408 @@
+/* =========================
+   Global & Base Styles
+   ========================= */
+:root {
+  /* Neon palette */
+  --pink: #ff00cc;
+  --purple: #7a00ff;
+  --blue: #0066ff;
+  --cyan: #00eaff;
+  --orange: #ff7a00;
+
+  /* UI colors */
+  --text: #eaf2ff;
+  --muted: #b8c2d6;
+  --overlay: rgba(10, 12, 20, 0.55);
+  --card-bg: rgba(20, 24, 35, 0.35);
+  --card-border: rgba(255, 255, 255, 0.18);
+
+  /* Effects */
+  --glass-blur: 18px;
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --glow: 0 0 20px rgba(0, 234, 255, 0.35), 0 0 40px rgba(255, 0, 204, 0.25);
+
+  /* Timing */
+  --speed-slow: 28s;
+  --speed-medium: 18s;
+  --speed-fast: 12s;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: #0a0d14;
+  overflow-x: hidden;
+}
+
+/* =========================
+   Live Wallpaper Background
+   ========================= */
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+
+/* Gradient layers with morphing + parallax */
+.gradient-layer {
+  position: absolute;
+  inset: -10%;
+  filter: blur(40px) saturate(120%);
+  opacity: 0.85;
+  transform: translateZ(0); /* GPU hint */
+  will-change: transform, background;
+}
+
+/* Layer 1: wide sweep */
+.layer-1 {
+  background: radial-gradient(1200px circle at 20% 30%, var(--pink), transparent 60%),
+              radial-gradient(900px circle at 80% 20%, var(--cyan), transparent 60%),
+              radial-gradient(1000px circle at 50% 80%, var(--purple), transparent 60%);
+  animation: morph1 var(--speed-slow) ease-in-out infinite alternate;
+}
+
+/* Layer 2: complementary hues */
+.layer-2 {
+  background: radial-gradient(900px circle at 30% 70%, var(--orange), transparent 60%),
+              radial-gradient(1100px circle at 70% 60%, var(--blue), transparent 60%),
+              radial-gradient(800px circle at 50% 40%, var(--pink), transparent 60%);
+  mix-blend-mode: screen;
+  animation: morph2 var(--speed-medium) ease-in-out infinite alternate;
+}
+
+/* Layer 3: subtle accent */
+.layer-3 {
+  background: radial-gradient(700px circle at 60% 30%, var(--cyan), transparent 60%),
+              radial-gradient(600px circle at 40% 50%, var(--purple), transparent 60%);
+  mix-blend-mode: lighten;
+  animation: morph3 var(--speed-fast) ease-in-out infinite alternate;
+}
+
+/* Parallax motion (applied via JS) */
+.gradient-layer {
+  transition: transform 0.15s ease-out;
+}
+
+/* Cursor glow (desktop only, toggled via JS) */
+.cursor-glow {
+  position: absolute;
+  pointer-events: none;
+  width: 60vmax;
+  height: 60vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.08) 35%,
+    rgba(255, 255, 255, 0.02) 65%,
+    transparent 75%
+  );
+  mix-blend-mode: overlay;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+/* Subtle noise overlay */
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.04'/></svg>");
+  background-size: 160px 160px;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+/* Morphing keyframes */
+@keyframes morph1 {
+  0%   { transform: translate3d(-2%, -1%, 0) scale(1.02); }
+  50%  { transform: translate3d(2%, 1%, 0) scale(1.05); }
+  100% { transform: translate3d(-1%, 2%, 0) scale(1.03); }
+}
+@keyframes morph2 {
+  0%   { transform: translate3d(1%, -2%, 0) scale(1.03); }
+  50%  { transform: translate3d(-2%, 2%, 0) scale(1.06); }
+  100% { transform: translate3d(2%, -1%, 0) scale(1.04); }
+}
+@keyframes morph3 {
+  0%   { transform: translate3d(-1%, 1%, 0) scale(1.01); }
+  50%  { transform: translate3d(1%, -1%, 0) scale(1.02); }
+  100% { transform: translate3d(0%, 2%, 0) scale(1.03); }
+}
+
+/* =========================
+   Readability Overlay
+   ========================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  z-index: -1;
+}
+
+/* =========================
+   Layout & Sections
+   ========================= */
+.section {
+  padding: 96px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding-top: 20vh;
+}
+
+.hero-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 0.5px;
+  margin: 0 0 12px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+}
+
+.hero-subtitle {
+  color: var(--muted);
+  max-width: 720px;
+  margin: 0 auto 24px;
+}
+
+/* =========================
+   Cards (Glassmorphism)
+   ========================= */
+.card.glass {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+  position: relative;
+  isolation: isolate;
+}
+
+.card.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  padding: 2px;
+  background: linear-gradient(135deg, var(--pink), var(--cyan), var(--orange));
+  background-size: 200% 200%;
+  animation: borderGlow 8s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+@keyframes borderGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.card-header {
+  margin-bottom: 16px;
+}
+
+/* =========================
+   Buttons
+   ========================= */
+.btn {
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #0a0d14;
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  box-shadow: var(--glow);
+  transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  text-decoration: none;
+}
+
+.btn.primary {
+  color: #0a0d14;
+}
+
+.btn.secondary {
+  color: #0a0d14;
+  background: linear-gradient(90deg, var(--orange), var(--purple));
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08) saturate(1.1);
+  box-shadow: 0 0 24px rgba(0, 234, 255, 0.55), 0 0 48px rgba(255, 0, 204, 0.35);
+}
+
+/* =========================
+   Gallery
+   ========================= */
+.upload-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Hide native input, use label as button */
+#imageUpload {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  aspect-ratio: 1 / 1;
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* =========================
+   Contact Form
+   ========================= */
+.form-group {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+label {
+  font-weight: 600;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(234, 242, 255, 0.6);
+}
+
+input:focus, textarea:focus {
+  border-color: rgba(0, 234, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(0, 234, 255, 0.2);
+}
+
+.form-status {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.form-status.success {
+  color: #00ff99;
+  animation: pop 300ms ease;
+}
+.form-status.error {
+  color: #ff5a5a;
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* =========================
+   Fade-in on scroll
+   ========================= */
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================
+   Back to top
+   ========================= */
+.back-to-top {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.back-to-top:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 768px) {
+  .section {
+    padding: 72px 18px;
+  }
+  .card.glass {
+    padding: 22px;
+  }
+  .hero-subtitle {
+    padding: 0 12px;
+  }
+}

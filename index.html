@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>pamira dewwin official website</title>
+
+  <!-- Google Fonts: Inter + Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated gradient background layers -->
+  <div class="wallpaper">
+    <div class="gradient-layer layer-1"></div>
+    <div class="gradient-layer layer-2"></div>
+    <div class="gradient-layer layer-3"></div>
+    <div class="cursor-glow"></div>
+    <div class="noise-overlay"></div>
+  </div>
+
+  <div class="overlay"></div>
+
+  <header class="hero section">
+    <h1 class="hero-title">Welcome to Pamira Dewwin's Web Page</h1>
+    <p class="hero-subtitle">Hello welcome to my official web page hope you like it.</p>
+    <a href="#about" class="btn primary">Explore</a>
+  </header>
+
+  <main>
+    <section id="about" class="section fade-in">
+      <div class="card glass">
+        <h2>About Me</h2>
+        <p>
+          Hi I'm from Sri Lanka, my birthday is 2008.12.20 and I live in Diyathalawa, Uva Province, Sri Lanka.
+        </p>
+      </div>
+    </section>
+
+    <section id="gallery" class="section fade-in">
+      <div class="card glass">
+        <div class="card-header">
+          <h2>Gallery</h2>
+          <p>Click the button below to upload your images on a new page</p>
+        </div>
+
+        <div class="upload-controls">
+          <!-- Link to the new upload page instead of file input -->
+          <a href="web2.html" class="btn secondary">My Images</a>
+
+
+
+
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid" aria-live="polite">
+          <!-- You can show featured images here if you want -->
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section fade-in">
+      <div class="card glass">
+        <h2>Contact</h2>
+        <form id="contactForm" novalidate>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" placeholder="Your Name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="Your Email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+          </div>
+
+          <button type="submit" class="btn primary">Send Message</button>
+          <p id="formStatus" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+
+  <!-- EmailJS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+  <!-- EmailJS Init -->
+  <script>
+    emailjs.init("UjqPwlSmqTMmAXQvl");
+  </script>
+
+  <!-- Your JS -->
+  <script src="script.js"></script>
+
+</body>
+</html>
